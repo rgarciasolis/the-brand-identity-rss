@@ -1,2 +1,5 @@
-# the-brand-identity-rss
-RSS feed for The Brand Identity features
+# The Brand Identity RSS Feed
+
+RSS feed automático para [The Brand Identity](https://the-brandidentity.com/features).
+
+## 📡 Feed URL
