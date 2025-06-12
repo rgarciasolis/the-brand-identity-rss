@@ -1,0 +1,40 @@
+name: Generate RSS Feed
+
+on:
+  schedule:
+    # Ejecutar cada 6 horas
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Permitir ejecución manual
+  push:
+    branches: [ main ]
+
+jobs:
+  generate-rss:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests beautifulsoup4 lxml
+        
+    - name: Generate RSS feed
+      run: |
+        python generate_rss.py
+        
+    - name: Commit and push if RSS changed
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add feed.xml metadata.json
+        git diff --staged --quiet || (git commit -m "Update RSS feed $(date)" && git push)
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
